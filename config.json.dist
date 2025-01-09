@@ -1,0 +1,20 @@
+{
+    "enableDebug": true,
+    "appName": "KubeNotifyPlus - Your Company",
+    "chatId": "chatId_of_system_admin",
+    "botToken": "botToken_of_system_admin",
+    "k8sToken": "Token_for_SA_to_k8s_here",
+    "apiServer": "https://127.0.0.1:6443",
+    "mysql": {
+        "dbUser": "your_db_user",
+        "dbPassword": "your_db_password",
+        "dbHost": "your_db_host",
+        "dbName": "kubenotifyplus_db",
+        "maxConnection": 20,
+        "maxIdleConnection": 20,
+        "connMaxLifetime": 300,
+        "connMaxIdleTime": 300
+    },
+    "pod_failure_investigate": true
+    
+}

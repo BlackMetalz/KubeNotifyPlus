@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crash-loopbackoff-example
+  labels:
+    app: crash-loopbackoff
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crash-loopbackoff
+  template:
+    metadata:
+      labels:
+        app: crash-loopbackoff
+    spec:
+      containers:
+      - name: crash-loopbackoff-example
+        image: busybox
+        command: ["sh", "-c", "exit 1"]

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-pullbackoff-example
+  labels:
+    app: image-pullbackoff
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-pullbackoff
+  template:
+    metadata:
+      labels:
+        app: image-pullbackoff
+    spec:
+      containers:
+      - name: image-pullbackoff-example
+        image: non-existent-image:latest
+        command: ["sh", "-c", "echo This should not run"]

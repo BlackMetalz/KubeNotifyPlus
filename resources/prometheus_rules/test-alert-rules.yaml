@@ -1,0 +1,12 @@
+# file: test-alert-rules.yaml
+groups:
+- name: test-alerts
+  rules:
+  - alert: AlwaysFiringTestAlert
+    expr: vector(1)
+    for: 0s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Test alert is always firing"
+      description: "This alert fires continuously to test Alertmanager notifications."

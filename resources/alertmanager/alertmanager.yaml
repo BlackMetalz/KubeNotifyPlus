@@ -1,0 +1,65 @@
+global:
+  # The smarthost and SMTP sender used for mail notifications.
+  smtp_smarthost: 'localhost:25'
+  smtp_from: 'alertmanager@example.org'
+  smtp_auth_username: 'alertmanager'
+  smtp_auth_password: 'password'
+  
+# The root route on which each incoming alert enters.
+route:
+  receiver: common-alert  # Default receiver
+  group_by:
+  - "job"
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1m
+  routes:
+    - receiver: notify-k8s  # default receiver for k8s xD
+      group_by: ['alertname', 'cluster', 'service'] # This helps in reducing the noise by combining multiple alerts into a single notification
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 5m
+      matchers:
+        - alertname!~"^ingress-k8s.*"
+        - alertname!~"^KubePod.*"
+        - alertname=~"^Kube.*"
+      continue: true
+
+    - receiver: notify-services-k8s  # Correct receiver name
+      group_by: ['alertname', 'cluster', 'service'] # This helps in reducing the noise by combining multiple alerts into a single notification
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 5m
+      matchers:
+        - alertname=~"KubePod.*" # Send if matched alertname with prefix
+      continue: true
+    - receiver: notify-ingress-k8s  # Correct receiver name
+      group_by: ['alertname', 'cluster', 'service'] # This helps in reducing the noise by combining multiple alerts into a single notification
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 5m
+      matchers:
+        - alertname=~"ingress-k8s.*" # Send if matched alertname with prefix
+      continue: true
+
+receivers:
+- name: common-alert # default
+  webhook_configs:
+  - send_resolved: true
+    url: http://kube-notify-plus.rke2-cluster.kienlt.local/common-alert
+    http_config: {}
+- name: notify-k8s # default k8s
+  webhook_configs:
+  - send_resolved: true
+    url: http://kube-notify-plus.rke2-cluster.kienlt.local/k8s-default
+    http_config: {}
+- name: notify-services-k8s # k8s-app
+  webhook_configs:
+  - send_resolved: true
+    url: http://kube-notify-plus.rke2-cluster.kienlt.local/k8s-app
+    http_config: {}
+- name: notify-ingress-k8s # k8s-ingress
+  webhook_configs:
+  - send_resolved: true
+    url: http://kube-notify-plus.rke2-cluster.kienlt.local/k8s-ingress
+    http_config: {}

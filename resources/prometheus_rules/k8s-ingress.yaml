@@ -1,0 +1,31 @@
+groups:
+  - name: kubernetes-ingress
+    rules:
+      - alert: ingress-k8s-http-error-502-503
+        expr: sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!="",status=~"50(2|3)"}[2m])) by (ingress, cluster, status) / sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!=""}[2m])) by (ingress, cluster, status) * 100 > 5
+        for: 60s
+        labels:
+          severity: critical
+        annotations:
+          description: "Service {{ $labels.ingress }}/{{ $labels.cluster }} too many HTTP requests with status 502|503 (>5%): {{ humanize $value }}%"
+      - alert: ingress-k8s-http-error-500
+        expr: sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!="",status="500"}[2m])) by (ingress, cluster, status) / sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!=""}[2m])) by (ingress, cluster, status) * 100 > 5
+        for: 60s
+        labels:
+          severity: critical
+        annotations:
+          description: "Service {{ $labels.ingress }}/{{ $labels.cluster }} too many HTTP requests with status 500 (>5%): {{ humanize $value }}%"
+      - alert: ingress-k8s-http-error-504
+        expr: sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!="",status="504"}[2m])) by (ingress, cluster, status) / sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!=""}[2m])) by (ingress, cluster, status) * 100 > 5
+        for: 60s
+        labels:
+          severity: critical
+        annotations:
+          description: "Service {{ $labels.ingress }}/{{ $labels.cluster }} too many HTTP requests with status 504 (>5%): {{ humanize $value }}%"
+      - alert: ingress-k8s-http-error-499
+        expr: sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!="",status="499"}[2m])) by (ingress, cluster, status) / sum(rate(nginx_ingress_controller_requests{job="ingress-nginx",namespace="kube-system",ingress!=""}[2m])) by (ingress, cluster, status) * 100 > 50
+        for: 60s
+        labels:
+          severity: critical
+        annotations:
+          description: "Service {{ $labels.ingress }}/{{ $labels.cluster }} too many HTTP requests with status 499 (>50%): {{ humanize $value }}%"
