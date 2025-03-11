@@ -4,12 +4,15 @@ import (
 	// "fmt"
 	"log"
 	"net/http"
-
+	"os"
 	// Utils
 	"KubeNotifyPlus/utils"
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetOutput(os.Stdout) // Ensure logs go to standard output
+		
     // Load the configuration from the config.json file
     err := utils.LoadConfig()
     if err != nil {
